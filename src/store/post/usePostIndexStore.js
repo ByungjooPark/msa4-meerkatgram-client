@@ -17,7 +17,7 @@ export const usePostIndexStore = defineStore('postIndex', () => {
     // 마지막 페이지가 아닐 경우만 실행
     if(!isLastPage.value) {
       try {
-        const url = '/api/post';
+        const url = '/api/posts';
         const params = {
           page,
         };

@@ -1,13 +1,38 @@
 import axios from "axios";
+import { useAuthStore } from "../store/auth/useAuthStore";
 
 const myAxios = axios.create({
   // Axios 호출 시, url 가장 앞에 자동으로 연결해서 동작
   baseURL: import.meta.env.VITE_API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
 
   // 크로스 도메인(서로 다른 도메인)에 요청을 보낼때,
   // credential 정보를 담아서 보낼지 여부를 설정
   //    credential 정보: cookies, header Authorization 항목 등등
   withCredentials: true,
+});
+
+myAxios.interceptors.request.use(async (config) => {
+  // 핵심: 요청이 발생하는 "이 시점"에 스토어를 호출
+  const authStore = useAuthStore();
+  let accessToken = authStore.accessToken;
+  const denyUrl = /^\/api\/auth\/reissue$/;// 리트라이 제외 URL 설정
+
+  if(!config.url.test(denyUrl) && authStore.isLoggedIn) {
+    // 엑세스 토큰 만료 확인
+    const claims = jwtDecode(accessToken);
+    const now = dayjs().unix();
+    const expTime = dayjs.unix(claims.exp).add(-5, 'minute').unix();
+
+    if(now >= expTime) {
+      const response = await authStore.reissue();
+      accessToken = response.data.accessToken;
+    }
+  }
+  config.headers.Authorization = `Bearer ${accessToken}`;
+  return config;
 });
 
 export default myAxios;

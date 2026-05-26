@@ -1,32 +1,45 @@
 <script setup>
 import { ref } from 'vue';
 import MyButton from './button/MyButton.vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../store/auth/useAuthStore.js';
 
-// TODO: 로그인 추가시 변경 필요 START
-const isLoggedIn = ref(false);
-// TODO: 로그인 추가시 변경 필요 END
+const router = useRouter();
+const authStore = useAuthStore();
+
+function redirectMain() {
+  router.push('/');
+}
+function redirectLogin() {
+  router.push('/login');
+}
+function redirectRegistration() {
+  router.push('/registration');
+}
 </script>
 
 <template>
   <div class="header">
     <div class="title-box">
-      <h1 class="title">Meerkatgram</h1>
+      <h1 class="title" @click="redirectMain()">Meerkatgram</h1>
     </div>
     <div class="btn-box">
       <MyButton
-        v-if="!isLoggedIn"
+        @click="redirectLogin()"
+        v-if="!authStore.isLoggedIn"
         :content="'Sign In'"
         :color="'gray'"
         :size="'small'"
       />
       <MyButton
-        v-if="!isLoggedIn"
+        @click="redirectRegistration()"
+        v-if="!authStore.isLoggedIn"
         :content="'Sign Up'"
         :color="'white'"
         :size="'small'"
       />
       <MyButton
-        v-if="isLoggedIn"
+        v-if="authStore.isLoggedIn"
         :content="'Logout'"
         :color="'black'"
         :size="'small'"
