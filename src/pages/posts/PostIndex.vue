@@ -1,5 +1,5 @@
 <script setup>
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, onBeforeUnmount, ref } from 'vue';
 import MyButton from '../../components/button/MyButton.vue';
 import { usePostIndexStore } from '../../store/post/usePostIndexStore.js';
 
@@ -11,6 +11,7 @@ const getNextPage = async () => {
 
 // 라이프 사이클
 onBeforeMount(postIndexStore.getPostPagination);
+onBeforeUnmount(postIndexStore.clearPostIndex);
 </script>
 
 <template>
