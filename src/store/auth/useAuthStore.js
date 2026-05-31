@@ -8,6 +8,7 @@ export const useAuthStore = defineStore('authStore', () => {
   const isLoggedIn = ref(false);
   const accessToken = ref('');
   const userInfo = ref(null);
+  const isTryReissue = ref(false);
 
   // 2. Getters (computed)
   // 3. Actions (function)
@@ -15,6 +16,11 @@ export const useAuthStore = defineStore('authStore', () => {
     isLoggedIn.value = false;
     accessToken.value = '';
     userInfo.value = null;
+  }
+
+  const clearAuthStoreReissue = () => {
+    clearAuthStore();
+    isTryReissue.value = true;
   }
 
   const login = async (inputs) => {
@@ -26,6 +32,7 @@ export const useAuthStore = defineStore('authStore', () => {
       isLoggedIn.value = true;
       accessToken.value = data.accessToken;
       userInfo.value = data.user;
+      isTryReissue.value = false;
     } catch(error) {
       clearAuthStore();
       console.error(error);
@@ -43,9 +50,7 @@ export const useAuthStore = defineStore('authStore', () => {
       accessToken.value = data.accessToken;
       userInfo.value = data.user;
     } catch(error) {
-      clearAuthStore();
-      console.error(error);
-      useMyErrorStore().setErrorInfo(error);
+      clearAuthStoreReissue();
     }
   }
   
@@ -54,11 +59,13 @@ export const useAuthStore = defineStore('authStore', () => {
     isLoggedIn,
     accessToken,
     userInfo,
+    isTryReissue,
 
     // getters
 
     // actions
     clearAuthStore,
+    clearAuthStoreReissue,
     login,
     reissue,
   }

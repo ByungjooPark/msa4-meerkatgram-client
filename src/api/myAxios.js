@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useAuthStore } from "../store/auth/useAuthStore";
+import { jwtDecode } from "jwt-decode";
+import dayjs from "dayjs";
 
 const myAxios = axios.create({
   // Axios 호출 시, url 가장 앞에 자동으로 연결해서 동작
@@ -20,7 +22,7 @@ myAxios.interceptors.request.use(async (config) => {
   let accessToken = authStore.accessToken;
   const denyUrl = /^\/api\/auth\/reissue$/;// 리트라이 제외 URL 설정
 
-  if(!config.url.test(denyUrl) && authStore.isLoggedIn) {
+  if(!denyUrl.test(config.url) && authStore.isLoggedIn) {
     // 엑세스 토큰 만료 확인
     const claims = jwtDecode(accessToken);
     const now = dayjs().unix();
@@ -31,7 +33,9 @@ myAxios.interceptors.request.use(async (config) => {
       accessToken = response.data.accessToken;
     }
   }
-  config.headers.Authorization = `Bearer ${accessToken}`;
+  if(accessToken) {
+    config.headers.Authorization = `Bearer ${accessToken}`;
+  }
   return config;
 });
 

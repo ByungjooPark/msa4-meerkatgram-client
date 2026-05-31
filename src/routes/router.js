@@ -47,11 +47,13 @@ router.beforeEach(async (to, from, next) => {
   const authStore = useAuthStore();
   
   // 토큰 재발급 시도(리프래시 대응)
-  try {
-    await authStore.reissue();
-  } catch (error) {
-    // 재발급 실패시 로그인 페이지로로
-    return next('/login');
+  if(!authStore.isLoggedIn && !authStore.isTryReissue) {
+    try {
+      await authStore.reissue();
+    } catch (error) {
+      // 재발급 실패시 로그인 페이지로로
+      return next('/login');
+    }
   }
 
   // 인증이 필요한 페이지인데 로그인 안된된 경우 로그인으로 이동
