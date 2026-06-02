@@ -3,6 +3,8 @@ import PostIndex from "../pages/posts/PostIndex.vue";
 import MyError from "../pages/errors/MyError.vue";
 import Login from "../pages/auth/Login.vue";
 import { useAuthStore } from "../store/auth/useAuthStore.js";
+import PostShow from "../pages/posts/PostShow.vue";
+import Registration from "../pages/auth/Registration.vue";
 
 const setMeta = (isAuthenticated, isGuestOnly) => {
   return {
@@ -23,11 +25,21 @@ const routes = [
     component: Login,
     meta: setMeta(false, true),
   },
+  {
+    path: '/registration',
+    component: Registration,
+    meta: setMeta(false, true),
+  },
   // 게시글 관련
   {
     path: '/posts',
     component: PostIndex,
     meta: setMeta(false, false),
+  },
+  {
+    path: '/posts/:id',
+    component: PostShow,
+    meta: setMeta(true, false),
   },
 ];
 
