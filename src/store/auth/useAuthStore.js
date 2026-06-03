@@ -66,6 +66,27 @@ export const useAuthStore = defineStore('authStore', () => {
     }
   }
 
+  const registration = async (registrationData) => {
+    try {
+      const url = '/api/users';
+
+      await myAxios.post(url, registrationData);
+      return true;
+    } catch(error) {
+      console.error(error);
+      if(error.response) {
+        if(error.response.data.code === 'E05') {
+          alert(error.response.data.data);
+          return false;
+        }
+      }
+
+      useMyErrorStore().setErrorInfo(error);
+    } finally {
+      clearAuthStore();
+    }
+  }
+
   return {
     // State
     isLoggedIn,
@@ -78,5 +99,6 @@ export const useAuthStore = defineStore('authStore', () => {
     login,
     reissue,
     logout,
+    registration,
   }
 });
