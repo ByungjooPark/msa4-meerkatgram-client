@@ -3,12 +3,23 @@ import { onBeforeMount, onBeforeUnmount, ref } from 'vue';
 import MyButton from '../../components/button/MyButton.vue';
 import { usePostIndexStore } from '../../store/post/usePostIndexStore.js';
 import { useRouter } from 'vue-router';
+import { useMyErrorStore } from '../../store/error/useMyErrorStore.js';
 
 const router = useRouter();
 const postIndexStore = usePostIndexStore();
+const myErrorStore = useMyErrorStore();
+
+const getPagination = async (page = 1) => {
+  try {
+    await postIndexStore.getPostPagination(page);
+  } catch (error) {
+    myErrorStore.setErrorInfo(error);
+    router.replace('/error');
+  }
+}
 
 const getNextPage = async () => {
-  await postIndexStore.getPostPagination(postIndexStore.getNextPageNumber);
+  await getPagination(postIndexStore.getNextPageNumber);
 }
 
 const redirectShow = (id) => {
@@ -16,7 +27,7 @@ const redirectShow = (id) => {
 }
 
 // 라이프 사이클
-onBeforeMount(postIndexStore.getPostPagination);
+onBeforeMount(getPagination);
 onBeforeUnmount(postIndexStore.clearPostIndex);
 </script>
 
