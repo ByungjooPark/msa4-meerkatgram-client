@@ -5,6 +5,7 @@ import Login from "../pages/auth/Login.vue";
 import { useAuthStore } from "../store/auth/useAuthStore.js";
 import PostShow from "../pages/posts/PostShow.vue";
 import Registration from "../pages/auth/Registration.vue";
+import PostCreate from "../pages/posts/PostCreate.vue";
 
 const setMeta = (isAuthenticated, isGuestOnly) => {
   return {
@@ -39,6 +40,11 @@ const routes = [
   {
     path: '/posts/:id',
     component: PostShow,
+    meta: setMeta(true, false),
+  },
+  {
+    path: '/posts/create',
+    component: PostCreate,
     meta: setMeta(true, false),
   },
   // 에러 관련
