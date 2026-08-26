@@ -47,7 +47,8 @@ const handleSubmit = async () => {
   } catch (error) {
     const data = error.response.data;
     if(data.code === 'E11') {
-      alert(data.data);
+      // 백엔드가 에러 상세를 data가 아니라 message(코드명)로 내려주므로 message를 사용한다
+      alert(data.message);
     } else if(data.code === 'E21') {
       alert('잘못된 양식입니다.');
     } else {

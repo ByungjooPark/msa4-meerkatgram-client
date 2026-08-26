@@ -29,7 +29,8 @@ const handleSubmit = async () => {
     } catch(error) {
       if(error.response) {
         if(error.response.data.code === 'E01') {
-          alert(error.response.data.data);
+          // 백엔드가 에러 상세를 data가 아니라 message(코드명)로 내려주므로 message를 사용한다
+          alert(error.response.data.message);
           return;
         }
       }
